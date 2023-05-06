@@ -36,4 +36,7 @@ class MemberNet:
     def get_similarity(self, member_id1, member_id2):
         node1 = self.members_dict[member_id1]
         node2 = self.members_dict[member_id2]
-        return self.same_opinions_meetings[node1][node2] / self.common_meetings[node1][node2]
+        if self.common_meetings[node1][node2] == 0:
+            return 0
+        else:
+            return self.same_opinions_meetings[node1][node2] / self.common_meetings[node1][node2]

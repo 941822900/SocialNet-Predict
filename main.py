@@ -138,9 +138,14 @@ def main():
             if vote['bill_name'] in sponsors_set:
                 continue
             for x in sponsors:
-                y1 += net1.get_similarity(vote['id'], x)
-                y2 += 1
-        y = y1 / y2
+                if net1.has_node(x):
+                    y1 += net1.get_similarity(vote['id'], x)
+                    y2 += 1
+        if y2 == 0:
+            print('All sponsors do not vote: ' + str(cosponsor))
+            y = 0
+        else:
+            y = y1 / y2
         predict.append(y)
         # 计算提案实际是否通过
         y1 = 0
@@ -151,13 +156,17 @@ def main():
                 y1 += 1
             if vote['vote'] != 'NV':
                 y2 += 1
-        y = y1 / y2
+        if y2 == 0:
+            print('No votes: ' + str(cosponsor))
+            y = 0
+        else:
+            y = y1 / y2
         answer.append(y)
 
     x = list(range(n-n1))
     # 画两条折线
-    plt.plot(x, predict, label='Line 1')
-    plt.plot(x, answer, label='Line 2')
+    plt.plot(x, predict, label='predict')
+    plt.plot(x, answer, label='answer')
 
     # 添加图例和标题
     plt.legend()
@@ -165,6 +174,12 @@ def main():
 
     # 显示图像
     plt.show()
+
+    cnt = 0
+    for i in range(len(predict)):
+        if (predict[i] > 1/4) == (answer[i] > 2/3):
+            cnt += 1
+    print('Accuracy: ' + str(cnt/len(predict)))
 
 
 if __name__ == "__main__":
