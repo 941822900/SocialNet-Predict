@@ -76,13 +76,45 @@ def main():
         # print(len(cosponsor['actions_dates']))
         # 更新网络的邻接矩阵
         # 此处太慢，待解决！
+        # for k1 in range(j0, j):
+        #     for k2 in range(j0, j):
+        #         vote1 = votes_data[k1]
+        #         vote2 = votes_data[k2]
+        #         net1.add_common_meeting(vote1['id'], vote2['id'])
+        #         if votes_data[k1]['vote'] == votes_data[k2]['vote']:
+        #             net1.add_same_opinions_meeting(vote1['id'], vote2['id'])
+        id_set = set()
+        y_id_dict = dict()
+        n_id_dict = dict()
+        nv_id_dict = dict()
         for k1 in range(j0, j):
-            for k2 in range(j0, j):
-                vote1 = votes_data[k1]
-                vote2 = votes_data[k2]
-                net1.add_common_meeting(vote1['id'], vote2['id'])
-                if votes_data[k1]['vote'] == votes_data[k2]['vote']:
-                    net1.add_same_opinions_meeting(vote1['id'], vote2['id'])
+            tmp_id = votes_data[k1]['id']
+            id_set.add(tmp_id)
+        for tmp_id in id_set:
+            y_id_dict[tmp_id] = 0
+            n_id_dict[tmp_id] = 0
+            nv_id_dict[tmp_id] = 0
+        for k1 in range(j0, j):
+            tmp_vote = votes_data[k1]
+            tmp_id = tmp_vote['id']
+            if tmp_vote['vote'] == 'Y':
+                y_id_dict[tmp_id] += 1
+            elif tmp_vote['vote'] == 'N':
+                n_id_dict[tmp_id] += 1
+            elif tmp_vote['vote'] == 'NV':
+                nv_id_dict[tmp_id] += 1
+        id_ls = list(id_set)
+        id_num = len(id_ls)
+        for k1 in range(id_num):
+            id1 = id_ls[k1]
+            for k2 in range(k1 + 1, id_num):
+                id2 = id_ls[k2]
+                same_opi = min(y_id_dict[id1], y_id_dict[id2]) + min(n_id_dict[id1], n_id_dict[id2]) \
+                           + min(nv_id_dict[id1], nv_id_dict[id2])
+                total_opi = min(y_id_dict[id1] + n_id_dict[id1] + nv_id_dict[id1],
+                                y_id_dict[id2] + n_id_dict[id2] + nv_id_dict[id2])
+                net1.add_same_opinions_meeting(id1, id2, same_opi)
+                net1.add_common_meeting(id1, id2, total_opi)
 
     # 在测试集中预测提案是否通过
     predict = []

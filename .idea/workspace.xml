@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9134571c-09a1-4099-b775-33051f3eab0b" name="Changes" comment="origin">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/process_data/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/process_data/.gitattributes" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/memberNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/memberNet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +39,10 @@
       <option name="presentableId" value="Default" />
       <updated>1683310567917</updated>
       <workItem from="1683310569073" duration="3316000" />
-      <workItem from="1683314554740" duration="574000" />
+      <workItem from="1683314554740" duration="638000" />
+      <workItem from="1683350817074" duration="612000" />
+      <workItem from="1683353133393" duration="1356000" />
+      <workItem from="1683364406762" duration="494000" />
     </task>
     <task id="LOCAL-00001" summary="origin">
       <created>1683310777545</created>
@@ -110,7 +114,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683314572739</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="origin">
+      <created>1683315139463</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1683315139463</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -130,5 +141,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="origin" />
     <option name="LAST_COMMIT_MESSAGE" value="origin" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SocialNet_Predict$main.coverage" NAME="main Coverage Results" MODIFIED="1683364602358" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

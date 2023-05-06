@@ -23,15 +23,15 @@ class MemberNet:
         self.common_meetings.append([0 for _ in range(len(self.common_meetings[0]))])
         self.same_opinions_meetings.append([0 for _ in range(len(self.same_opinions_meetings[0]))])
 
-    def add_common_meeting(self, member_id1, member_id2):
+    def add_common_meeting(self, member_id1, member_id2, total_opi):
         node1 = self.members_dict[member_id1]
         node2 = self.members_dict[member_id2]
-        self.common_meetings[node1][node2] += 1
+        self.common_meetings[node1][node2] += total_opi
 
-    def add_same_opinions_meeting(self, member_id1, member_id2):
+    def add_same_opinions_meeting(self, member_id1, member_id2, same_opi):
         node1 = self.members_dict[member_id1]
         node2 = self.members_dict[member_id2]
-        self.same_opinions_meetings[node1][node2] += 1
+        self.same_opinions_meetings[node1][node2] += same_opi
 
     def get_similarity(self, member_id1, member_id2):
         node1 = self.members_dict[member_id1]
