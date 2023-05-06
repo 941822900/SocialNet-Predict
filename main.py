@@ -55,6 +55,16 @@ def main():
     cosponsors_data, members_data, votes_data = read_data()
     # print(len(set(d['id'] for d in votes_data)))
 
+    # 记录成员在每个会议中属于哪个子社团
+    subclub_dict = {}
+    for x in members_data:
+        meeting = x['meeting']
+        subclub = x['subclub']
+        for member in x['members']:
+            if member not in subclub_dict:
+                subclub_dict[member] = {}
+                subclub_dict[member][meeting] = subclub
+
     net1 = memberNet.MemberNet()
 
     # 以提案来划分训练集和测试集
@@ -65,11 +75,15 @@ def main():
     for i in range(n1):
         print(i)
         cosponsor = cosponsors_data[i]
+        meeting = cosponsor['bill_id'].split('-')[-1]
         # 该提案的所有投票 votes_data[j0]--votes_data[j]
         j0 = j
         while j < len(votes_data) and votes_data[j]['bill_name'] == cosponsor['bill_id']:
             if not net1.has_node(votes_data[j]['id']):
-                net1.add_node(votes_data[j]['id'])
+                member_subclub = None
+                if votes_data[j]['id'] in subclub_dict:
+                    member_subclub = subclub_dict[votes_data[j]['id']]
+                net1.add_node(votes_data[j]['id'], votes_data[j]['group'], votes_data[j]['district'], member_subclub=member_subclub)
             j += 1
         print(str(j0) + '-' + str(j))
         # print(len(set(votes_data[t]['id'] for t in range(j0, j))))
@@ -128,7 +142,10 @@ def main():
         j0 = j
         while j < len(votes_data) and votes_data[j]['bill_name'] == cosponsor['bill_id']:
             if not net1.has_node(votes_data[j]['id']):
-                net1.add_node(votes_data[j]['id'])
+                member_subclub = None
+                if votes_data[j]['id'] in subclub_dict:
+                    member_subclub = subclub_dict[votes_data[j]['id']]
+                net1.add_node(votes_data[j]['id'], votes_data[j]['group'], votes_data[j]['district'], member_subclub=member_subclub)
             j += 1
         # 预测是否通过
         y1 = 0
@@ -138,11 +155,14 @@ def main():
             if vote['bill_name'] in sponsors_set:
                 continue
             for x in sponsors:
-                if net1.has_node(x):
-                    y1 += net1.get_similarity(vote['id'], x)
-                    y2 += 1
+                if not net1.has_node(x):
+                    member_subclub = None
+                    if member_subclub in subclub_dict:
+                        member_subclub = subclub_dict[x]
+                    net1.add_node(x, member_subclub=member_subclub)
+                y1 += net1.get_similarity(vote['id'], x, meeting)
+                y2 += 1
         if y2 == 0:
-            print('All sponsors do not vote: ' + str(cosponsor))
             y = 0
         else:
             y = y1 / y2
@@ -157,6 +177,7 @@ def main():
             if vote['vote'] != 'NV':
                 y2 += 1
         if y2 == 0:
+            # 这种情况实际上就是所有人都投弃权票，当成提案未通过
             print('No votes: ' + str(cosponsor))
             y = 0
         else:
@@ -175,9 +196,11 @@ def main():
     # 显示图像
     plt.show()
 
+    print(predict)
+    print(answer)
     cnt = 0
     for i in range(len(predict)):
-        if (predict[i] > 1/4) == (answer[i] > 2/3):
+        if (predict[i] > 0.09) == (answer[i] > 1/2):
             cnt += 1
     print('Accuracy: ' + str(cnt/len(predict)))
 
