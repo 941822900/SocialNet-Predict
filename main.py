@@ -63,7 +63,7 @@ def main():
         for member in x['members']:
             if member not in subclub_dict:
                 subclub_dict[member] = {}
-                subclub_dict[member][meeting] = subclub
+            subclub_dict[member][meeting] = subclub
 
     net1 = memberNet.MemberNet()
 
@@ -150,19 +150,21 @@ def main():
         # 预测是否通过
         y1 = 0
         y2 = 0
+        for x in sponsors:
+            if not net1.has_node(x):
+                if x in subclub_dict:
+                    net1.add_node(x, member_subclub=subclub_dict[x])
         for k in range(j0, j):
             vote = votes_data[k]
             if vote['bill_name'] in sponsors_set:
                 continue
             for x in sponsors:
-                if not net1.has_node(x):
-                    member_subclub = None
-                    if member_subclub in subclub_dict:
-                        member_subclub = subclub_dict[x]
-                    net1.add_node(x, member_subclub=member_subclub)
-                y1 += net1.get_similarity(vote['id'], x, meeting)
-                y2 += 1
+                if net1.has_node(x):
+                    y1 += net1.get_similarity(vote['id'], x, meeting)
+                    y2 += 1
         if y2 == 0:
+            # 没有任何一个sponsor有可以使用的信息
+            print(cosponsor)
             y = 0
         else:
             y = y1 / y2
@@ -200,7 +202,7 @@ def main():
     print(answer)
     cnt = 0
     for i in range(len(predict)):
-        if (predict[i] > 0.09) == (answer[i] > 1/2):
+        if (predict[i] > 0.1) == (answer[i] > 1/2):
             cnt += 1
     print('Accuracy: ' + str(cnt/len(predict)))
 
